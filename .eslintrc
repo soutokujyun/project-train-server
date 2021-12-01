@@ -1,0 +1,6 @@
+{
+  "extends": "eslint-config-egg",
+  "rules": {
+    // "semi": ["error", "never"] // 所有有带分号的都会报错
+  }
+}
