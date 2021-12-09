@@ -28,14 +28,14 @@ module.exports = appInfo => {
     ...userConfig,
     security: {
       csrf: {
-        enable: false
-      }
+        enable: false,
+      },
     },
     mongoose: {
       client: {
-        url: "mongodb://127.0.0.1:27017/kkbhub",
+        url: 'mongodb://127.0.0.1:27017/kkbhub',
         option: {},
-      }
-    }
+      },
+    },
   };
 };
