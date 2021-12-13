@@ -4,6 +4,7 @@
 const BaseController = require('./base.js');
 const md5 = require('md5');
 const HashSalt = ":zeng@good!@123";
+const jwt = require('jsonwebtoken')
 
 const createRules = {
   email: { type: 'string' },
@@ -13,7 +14,32 @@ const createRules = {
 };
 
 class UserController extends BaseController {
-  async login() { }
+  async login() {
+    // this.success('token')
+    const {ctx, app} = this;
+    const { email, passwd, captcha } = ctx.request.body;
+
+    // 验证码校验
+    if (captcha.toUpperCase() !== ctx.session.captcha.toUpperCase()) {
+      return this.error('验证码错误');
+    }
+    const user = await ctx.model.User.findOne({
+      email,
+      passwd: md5(passwd + HashSalt)
+    })
+
+    if (!user) {
+      return this.error('用户密码错误')
+    }
+    // 用户信息加密成token返回
+    const token = jwt.sign({
+      _id: user._id,
+      email,
+    }, app.config.jwt.secret, {
+      expiresIn: '1h'
+    })
+    this.success({token,email,nickname:user.nickname})
+   }
   async register() {
     const { ctx } = this;
     try {
@@ -27,24 +53,22 @@ class UserController extends BaseController {
 
     // 验证码校验
     if (captcha.toUpperCase() !== ctx.session.captcha.toUpperCase()) {
-      this.error('验证码错误');
-    } else {
+      return this.error('验证码错误');
+    }
       // this.success({ name: 'kkb' });
       // 校验用户是否重复
-      if (await this.checkEmail(email)) {
-        this.error('邮箱重复了')
-      } else {
-        const ret = await ctx.model.User.create({
-          email,
-          nickname,
-          passwd: md5(passwd+HashSalt)
-        })
-        if (ret.id) {
-          this.message('注册成功')
-        }
-      }
+    if (await this.checkEmail(email)) {
+      return this.error('邮箱重复了')
     }
 
+    const ret = await ctx.model.User.create({
+      email,
+      nickname,
+      passwd: md5(passwd+HashSalt)
+    })
+    if (ret.id) {
+      this.message('注册成功')
+    }
   }
   async checkEmail(email) {
     const user = await this.ctx.model.User.findOne({email});
