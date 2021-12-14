@@ -18,19 +18,19 @@ class HomeController extends BaseController {
   }
 
   async sendcode() {
-    const {ctx} = this
-    const email = ctx.query.email
-    let code = Math.random().toString().slice(2,6)
+    const { ctx } = this;
+    const email = ctx.query.email;
+    const code = Math.random().toString().slice(2, 6);
     console.log(code);
-    ctx.session.emailcode = code
-    const subject = 'kkb验证码'
-    const text = ''
-    const html = `<h2>小开社区</h2><a href="www.baidu.com"><span>${code}</span></a>`
-    const hasSend = await this.service.tools.sendMail(email,subject,text,html)
+    ctx.session.emailcode = code;
+    const subject = 'kkb验证码';
+    const text = '';
+    const html = `<h2>小开社区</h2><a href="www.baidu.com"><span>${code}</span></a>`;
+    const hasSend = await this.service.tools.sendMail(email, subject, text, html);
     if (hasSend) {
-      this.message('发送成功')
+      this.message('发送成功');
     } else {
-      this.error('发送失败')
+      this.error('发送失败');
     }
   }
 }
