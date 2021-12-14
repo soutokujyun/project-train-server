@@ -5,7 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  const jwt = app.middleware.jwt({app})
+  const jwt = app.middleware.jwt({ app });
   router.get('/', controller.home.index);
 
   // 验证码
