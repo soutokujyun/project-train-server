@@ -17,9 +17,12 @@ class UserController extends BaseController {
   async login() {
     // this.success('token')
     const {ctx, app} = this;
-    const { email, passwd, captcha } = ctx.request.body;
+    const { email, passwd, captcha, emailcode } = ctx.request.body;
 
     // 验证码校验
+    if (emailcode !== ctx.session.emailcode) {
+      return this.error('邮箱验证码错误');
+    }
     if (captcha.toUpperCase() !== ctx.session.captcha.toUpperCase()) {
       return this.error('验证码错误');
     }
@@ -75,7 +78,14 @@ class UserController extends BaseController {
     return user;
   }
   async verify() { }
-  async info() { }
+  async info() {
+    const {ctx} = this
+    // 还不知道哪个邮件，需要从token里读取
+    // 有些接口需要从token里读数据
+    const {email} = ctx.state
+    const user = await this.checkEmail(email)
+    this.success(user)
+  }
 }
 
 module.exports = UserController;

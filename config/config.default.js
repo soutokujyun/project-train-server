@@ -38,7 +38,7 @@ module.exports = appInfo => {
       },
     },
     jwt: {
-      secret: 'kkb@123!good'
-    }
+      secret: 'kkb@123!good',
+    },
   };
 };

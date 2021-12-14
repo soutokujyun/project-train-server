@@ -6,9 +6,9 @@ module.exports = app => {
   const Schema = mongoose.Schema;
 
   const UserSchema = new Schema({
-    // _v:
+    __v: { type: Number, select: false }, // select: false 查找时不输出
     email: { type: String, required: true },
-    passwd: { type: String, required: true },
+    passwd: { type: String, required: true, select: false },
     nickname: { type: String, required: true },
     avatar: { type: String, required: true, default: '/user.png' },
   }, {
