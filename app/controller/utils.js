@@ -2,6 +2,7 @@
 
 const BaseController = require('./base.js');
 const svgCaptcha = require('svg-captcha');
+const fse = require('fs-extra');
 
 class HomeController extends BaseController {
   async captcha() {
@@ -32,6 +33,19 @@ class HomeController extends BaseController {
     } else {
       this.error('发送失败');
     }
+  }
+
+  // 文件上传
+  async uploadfile() {
+    const { ctx } = this;
+    const file = ctx.request.files[0];
+    // const { name } = ctx.request.body;
+
+    // const targetDir = path.resovle
+    await fse.move(file.filepath, this.config.UPLOAD_DIR + `/${file.filename}`);
+    this.success({
+      url: `/public/${file.filename}`,
+    });
   }
 }
 

@@ -11,6 +11,8 @@ module.exports = app => {
   // 验证码
   router.get('/captcha', controller.utils.captcha);
   router.get('/sendcode', controller.utils.sendcode);
+  // 文件
+  router.post('/uploadfile', controller.utils.uploadfile);
 
 
   // 用户
@@ -21,4 +23,6 @@ module.exports = app => {
     router.get('/info', jwt, info);
     router.get('/verify', verify);
   });
+
+
 };
