@@ -13,6 +13,7 @@ module.exports = app => {
   router.get('/sendcode', controller.utils.sendcode);
   // 文件
   router.post('/uploadfile', controller.utils.uploadfile);
+  router.post('/mergefile', controller.utils.mergefile);
 
 
   // 用户
