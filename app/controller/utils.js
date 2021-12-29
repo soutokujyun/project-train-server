@@ -58,7 +58,7 @@ class HomeController extends BaseController {
     //   url: `/public/${file.filename}`,
     // });
   }
-
+  // 文件合并
   async mergefile() {
     const { ext, size, hash } = this.ctx.request.body;
     const filePath = path.resolve(this.config.UPLOAD_DIR, `${hash}.${ext}`);
@@ -66,6 +66,33 @@ class HomeController extends BaseController {
     this.success({
       url: `/public/${hash}.${ext}`,
     });
+  }
+  // 文件查找
+  async checkfile() {
+    const { ctx } = this;
+    const { ext, hash } = ctx.request.body;
+    const filePath = path.resolve(this.config.UPLOAD_DIR, `${hash}.${ext}`);
+
+    let uploaded = false;
+    let uploadedList = [];
+
+    if (fse.existsSync(filePath)) {
+      // 文件存在
+      uploaded = true;
+    } else {
+      // 文件不存在
+      uploadedList = await this.getUploadedList(path.resolve(this.config.UPLOAD_DIR, hash));
+    }
+    this.success({
+      uploaded,
+      uploadedList,
+    });
+  }
+
+  async getUploadedList(dirPath) {
+    return fse.existsSync(dirPath)
+      ? (await fse.readdir(dirPath)).filter(name => name[0] !== '.')
+      : [];
   }
 }
 

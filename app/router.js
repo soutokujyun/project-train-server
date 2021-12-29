@@ -14,6 +14,7 @@ module.exports = app => {
   // 文件
   router.post('/uploadfile', controller.utils.uploadfile);
   router.post('/mergefile', controller.utils.mergefile);
+  router.post('/checkfile', controller.utils.checkfile);
 
 
   // 用户
