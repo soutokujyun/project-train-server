@@ -12,10 +12,8 @@ module.exports = ({ app }) => {
     }
 
     const token = ctx.request.header.authorization.replace('Bearer ', '');
-    console.log(token);
     try {
       const result = await jwt.verify(token, app.config.jwt.secret);
-      console.log(result);
       ctx.state.email = result.email;
       ctx.state.userid = result._id;
 

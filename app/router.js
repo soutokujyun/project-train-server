@@ -16,6 +16,13 @@ module.exports = app => {
   router.post('/mergefile', controller.utils.mergefile);
   router.post('/checkfile', controller.utils.checkfile);
 
+  // 文件8个场景
+  router.group({ name: 'upload', prefix: '/upload' }, router => {
+    const { single, multiple, directory } = controller.upload;
+    router.post('/single', single);
+    router.post('/multiple', multiple);
+    router.post('/directory', directory);
+  });
 
   // 用户
   router.group({ name: 'user', prefix: '/user' }, router => {
