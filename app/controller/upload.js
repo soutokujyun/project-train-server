@@ -12,16 +12,11 @@ class FileController extends BaseController {
     const { ctx } = this;
     const file = ctx.request.files[0];
     const publicPath = path.resolve(this.config.UPLOAD_DIR);
-
-    // if (!fse.existsSync(chunkPath)) {
-    //   await fse.mkdir(chunkPath);
-    // }
-    try {
+    const filePath = path.resolve(publicPath, file.filename);
+    // 判断文件是否存在
+    if (!fse.existsSync(filePath)) {
       await fse.move(file.filepath, `${publicPath}/${file.filename}`);
-    } catch (error) {
-      console.log(error);
     }
-
     this.success({
       url: `/public/${file.filename}`,
     });
@@ -33,19 +28,16 @@ class FileController extends BaseController {
     const { ctx } = this;
     const files = ctx.request.files;
     const publicPath = path.resolve(this.config.UPLOAD_DIR);
-
     const urls = [];
     await Promise.all(
       files.map(file => {
-        return new Promise((resolve, reject) => {
-          try {
+        return new Promise(resolve => {
+          const filePath = path.resolve(publicPath, file.filename);
+          if (!fse.existsSync(filePath)) {
             fse.move(file.filepath, `${publicPath}/${file.filename}`);
-            urls.push(`/public/${file.filename}`);
-            resolve();
-          } catch (error) {
-            console.log(error);
-            reject(error);
           }
+          urls.push(`/public/${file.filename}`);
+          resolve();
         });
       })
     );
@@ -69,9 +61,15 @@ class FileController extends BaseController {
       // 提取文件名
       const fileParts = file.filename.split('@');
       const fileName = fileParts[fileParts.length - 1];
-      // 判断文件夹是否存在
-      await fse.ensureDir(publicPath);
-      await fse.move(file.filepath, `${publicPath}/${fileName}`);
+      const filePath = path.resolve(publicPath, fileName);
+      // 判断文件是否存在
+      if (!fse.existsSync(filePath)) {
+        // 判断文件夹是否存在
+        if (!fse.existsSync(publicPath)) {
+          await fse.mkdir(publicPath);
+        }
+        await fse.move(file.filepath, `${publicPath}/${fileName}`);
+      }
       urls.push(path.join(`/public/${relativePath}`));
       resolve();
     });
